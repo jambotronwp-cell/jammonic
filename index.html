@@ -107,8 +107,8 @@
     <figure class="shot">
       <video autoplay muted loop playsinline preload="metadata" width="960" height="600" poster="/media/status-poster.jpg"
              aria-label="A real Jammonic status page: Jambotron dev with red outages, staging and prod green, ECG trace running">
-        <source src="/jammonic/media/status.webm" type="video/webm">
         <source src="/jammonic/media/status.mp4" type="video/mp4">
+        <source src="/jammonic/media/status.webm" type="video/webm">
       </video>
       <figcaption>The real status page that watches Jambotron: dev, staging, prod.</figcaption>
     </figure>
@@ -206,9 +206,12 @@ curl -fsS $JAMMONIC/push/<span class="s">&lt;token&gt;</span></pre>
   </div>
 </footer>
 <script>
-  if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    document.querySelectorAll('.shot video').forEach(v => { v.removeAttribute('autoplay'); v.pause(); v.controls = true; });
-  }
+  // Видео играет всегда; при «уменьшить движение» (Windows: эффекты анимации выключены) — ещё и кнопки, чтобы остановить
+  document.querySelectorAll('.shot video').forEach(v => {
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) { v.controls = true; }
+    v.muted = true;
+    const p = v.play(); if (p) { p.catch(() => { v.controls = true; }); }
+  });
 </script>
 </body>
 </html>

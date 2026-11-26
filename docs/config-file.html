@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Configuration file — Jammonic docs</title>
-  <meta name="description" content="Describe checks in YAML and point MONITOR_CONFIG_FILE to it. The file is applied at every start.">
+  <meta name="description" content="Describe groups and checks in YAML and point MONITOR_CONFIG_FILE to it. The file is applied at every start.">
   <link rel="canonical" href="https://jammonic.com/docs/config-file.html">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230f172a'/%3E%3Cpath d='M3 17h6l3-8 5 15 4-11 2 4h6' fill='none' stroke='%2334d399' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
   <style>
@@ -117,8 +117,13 @@
   </nav>
   <article class="doc card">
 <h1>Configuration file</h1>
-<p>Describe checks in YAML and point <code>MONITOR_CONFIG_FILE</code> to it. The file is applied at every start.</p>
-<pre><code class="language-yaml">checks:
+<p>Describe groups and checks in YAML and point <code>MONITOR_CONFIG_FILE</code> to it. The file is applied at every start.</p>
+<pre><code class="language-yaml">groups:
+  Websites:
+    status-page: true   # shown on the public status page
+    order: 10           # place in lists (smaller is higher)
+    owner: alice        # username; none — the group has no owner (administrators see it)
+checks:
   shop-web:
     name: shop
     type: http
@@ -136,6 +141,9 @@
     grace-seconds: 3600
 </code></pre>
 <p>The key of each entry is the check&#39;s <code>externalId</code>; fields are the same as in the API, written with dashes.</p>
+<p>With Docker, mount the file: <code>-v ./jammonic.yml:/config/jammonic.yml:ro -e MONITOR_CONFIG_FILE=/config/jammonic.yml</code>.</p>
+<p>A group listed in the file gets the file&#39;s status page, order and owner at every start. A group named only in a
+check is created without an owner and kept off the status page.</p>
 <p>The file owns its own checks: a check removed from the file is removed from Jammonic. Checks created through the
 API or the UI are never touched by the file, so both ways live side by side.</p>
 

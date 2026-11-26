@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Changelog — Jammonic docs</title>
-  <meta name="description" content="- Email only for the checks you choose: MONITOR_MAIL_TYPES=PUSH sends letters about backups and timers, while">
+  <meta name="description" content="- The YAML configuration file is back, now with groups: groups  and checks in one file">
   <link rel="canonical" href="https://jammonic.com/docs/changelog.html">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230f172a'/%3E%3Cpath d='M3 17h6l3-8 5 15 4-11 2 4h6' fill='none' stroke='%2334d399' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
   <style>
@@ -117,6 +117,52 @@
   </nav>
   <article class="doc card">
 <h1>Changelog</h1>
+<h2 id="0-5-0-2026-11-26"><a href="#0-5-0-2026-11-26">0.5.0 — 2026-11-26</a></h2>
+<ul>
+<li>The YAML configuration file is back, now with groups: <code>groups</code> (status page, order, owner) and <code>checks</code> in one file
+set by <code>MONITOR_CONFIG_FILE</code>, applied at every start. See <a href="config-file.html">Configuration file</a>.</li>
+</ul>
+<h2 id="0-4-0-2026-11-26"><a href="#0-4-0-2026-11-26">0.4.0 — 2026-11-26</a></h2>
+<ul>
+<li>Demo mode (<code>MONITOR_DEMO=true</code>) — try it at <a href="https://demo.jammonic.com/">demo.jammonic.com</a>: a shared sign-in,
+read-only built-in checks, your own checks in &quot;Playground&quot;, everything visitors add is removed at night.</li>
+<li><code>MONITOR_PUBLIC_TARGETS_ONLY=true</code>: only public addresses are checked — no private networks, loopback or
+link-local, the address is checked before every probe and HTTP does not follow redirects.</li>
+</ul>
+<h2 id="0-3-4-2026-11-24"><a href="#0-3-4-2026-11-24">0.3.4 — 2026-11-24</a></h2>
+<ul>
+<li>Groups have an <code>order</code>: lists and the status page follow it.</li>
+</ul>
+<h2 id="0-3-3-2026-11-24"><a href="#0-3-3-2026-11-24">0.3.3 — 2026-11-24</a></h2>
+<ul>
+<li>Groups named after environments come first: Dev, Staging, Production, then the rest.</li>
+</ul>
+<h2 id="0-3-2-2026-11-22"><a href="#0-3-2-2026-11-22">0.3.2 — 2026-11-22</a></h2>
+<ul>
+<li>Passwords need at least 8 characters (was 10).</li>
+</ul>
+<h2 id="0-3-1-2026-11-22"><a href="#0-3-1-2026-11-22">0.3.1 — 2026-11-22</a></h2>
+<ul>
+<li>Status page periods: 24 hours, 7 days (by hour), 90 days (by day). Click a check to see response time and outages.</li>
+</ul>
+<h2 id="0-3-0-2026-11-22"><a href="#0-3-0-2026-11-22">0.3.0 — 2026-11-22</a></h2>
+<ul>
+<li>Groups belong to a user; forms for groups and checks; every user can open their own status page
+<code>/status/&lt;username&gt;</code> for the groups they mark public. The configuration file was removed in this version
+(back in 0.5.0).</li>
+</ul>
+<h2 id="0-2-1-2026-11-22"><a href="#0-2-1-2026-11-22">0.2.1 — 2026-11-22</a></h2>
+<ul>
+<li>Alerts per group: own email recipients, the group&#39;s members and a Telegram chat. See <a href="notifications.html">Alerts</a>.</li>
+</ul>
+<h2 id="0-2-0-2026-11-22"><a href="#0-2-0-2026-11-22">0.2.0 — 2026-11-22</a></h2>
+<ul>
+<li>Sign in with a username and password; users and groups of checks. See <a href="sign-in.html">Sign-in</a>.</li>
+</ul>
+<h2 id="0-1-8-2026-11-20"><a href="#0-1-8-2026-11-20">0.1.8 — 2026-11-20</a></h2>
+<ul>
+<li>Webhooks through the API and a &quot;managed by&quot; label that shows which program keeps a check.</li>
+</ul>
 <h2 id="0-1-7-2026-11-19"><a href="#0-1-7-2026-11-19">0.1.7 — 2026-11-19</a></h2>
 <ul>
 <li>Email only for the checks you choose: <code>MONITOR_MAIL_TYPES=PUSH</code> sends letters about backups and timers, while
