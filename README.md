@@ -3,6 +3,8 @@
 Free, self-hosted uptime monitor: HTTP, TCP, certificate and push checks, a public status page and alerts.
 Everything is set up through a REST API or one YAML file. One Docker image.
 
+![A real Jammonic status page: Jambotron dev, staging and prod](status.gif)
+
 - **Website:** https://jammonic.com
 - **Docs:** https://jammonic.com/docs/
 - **Docker image:** https://hub.docker.com/r/jambotron/jammonic
