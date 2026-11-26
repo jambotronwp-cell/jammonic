@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Changelog — Jammonic docs</title>
+  <meta name="description" content="- Email only for the checks you choose: MONITOR_MAIL_TYPES=PUSH sends letters about backups and timers, while">
+  <link rel="canonical" href="https://jammonic.com/docs/changelog.html">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230f172a'/%3E%3Cpath d='M3 17h6l3-8 5 15 4-11 2 4h6' fill='none' stroke='%2334d399' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #f6f7fb; --surface: #ffffff; --text: #111827; --muted: #5b6475; --line: #e3e7ef;
+      --up: #0f9f62; --up-soft: #dcf5e9; --down: #d23b3b; --accent: #2f6fed; --code-bg: #0f172a; --code-text: #e2e8f0;
+      --font: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; --font-mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+      --radius: 14px;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root { --bg: #0b1020; --surface: #121a2e; --text: #e8ecf4; --muted: #9aa4b8; --line: #23304a;
+        --up: #34d399; --up-soft: #12352a; --down: #f87171; --accent: #7aa2ff; --code-bg: #0a0f1d; }
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { margin: 0; background: var(--bg); color: var(--text); font: 17px/1.6 var(--font); }
+    a { color: var(--accent); text-decoration: none; } a:hover { text-decoration: underline; }
+    .wrap { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+    header.top { position: sticky; top: 0; z-index: 10; backdrop-filter: blur(10px); background: color-mix(in srgb, var(--bg) 82%, transparent);
+      border-bottom: 1px solid var(--line); }
+    header.top .wrap { display: flex; align-items: center; gap: 22px; height: 60px; }
+    .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 20px; color: var(--text); }
+    .brand svg { width: 30px; height: 30px; }
+    header.top nav { margin-left: auto; display: flex; gap: 20px; flex-wrap: wrap; }
+    header.top nav a { color: var(--muted); font-weight: 600; font-size: 15px; }
+    .hero { padding: 72px 0 40px; display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); gap: 40px; align-items: center; }
+    @media (max-width: 900px) { .hero { grid-template-columns: minmax(0, 1fr); padding-top: 44px; } header.top nav { display: none; } }
+    .hero h1 { font-size: clamp(34px, 5vw, 54px); line-height: 1.08; margin: 0 0 18px; letter-spacing: -.02em; }
+    .hero h1 em { font-style: normal; color: var(--up); }
+    .hero p.lead { font-size: 20px; color: var(--muted); margin: 0 0 26px; }
+    .btns { display: flex; gap: 12px; flex-wrap: wrap; }
+    .btn { display: inline-block; padding: 12px 20px; border-radius: 10px; font-weight: 700; border: 1px solid var(--line); color: var(--text); background: var(--surface); }
+    .btn.primary { background: var(--up); border-color: var(--up); color: #fff; }
+    .btn:hover { text-decoration: none; filter: brightness(1.05); }
+    .note { color: var(--muted); font-size: 14px; margin-top: 14px; }
+    pre { background: var(--code-bg); color: var(--code-text); border-radius: var(--radius); padding: 18px 20px; overflow-x: auto;
+      font: 14px/1.55 var(--font-mono); margin: 0; }
+    pre .c { color: #7c8aa5; } pre .k { color: #34d399; } pre .s { color: #fbbf24; }
+    .card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 22px; }
+    .status { padding: 0; overflow: hidden; }
+    .status .head { background: var(--up); color: #fff; padding: 14px 18px; font-weight: 700; }
+    .status .row { padding: 12px 18px; border-top: 1px solid var(--line); }
+    .status .row .n { display: flex; justify-content: space-between; font-weight: 600; font-size: 15px; margin-bottom: 6px; }
+    .status .row .n span { color: var(--muted); font-weight: 500; }
+    .bars { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 2px; height: 22px; }
+    .bars i { border-radius: 2px; background: var(--up); }
+    .bars i.p { background: #e0a82e; } .bars i.b { background: var(--down); }
+    section { padding: 56px 0; }
+    section h2 { font-size: clamp(26px, 3.4vw, 34px); margin: 0 0 10px; letter-spacing: -.01em; }
+    section p.sub { color: var(--muted); margin: 0 0 28px; font-size: 18px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+    .grid .card h3 { margin: 0 0 6px; font-size: 18px; }
+    .grid .card p { margin: 0; color: var(--muted); font-size: 16px; }
+    .two { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 18px; }
+    .two > div, .hero > div { min-width: 0; }
+    @media (max-width: 900px) { .two { grid-template-columns: minmax(0, 1fr); } }
+    .two h3 { margin: 0 0 10px; font-size: 17px; }
+    table { width: 100%; border-collapse: collapse; font-size: 16px; }
+    th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+    th { color: var(--muted); font-weight: 600; }
+    td.y { color: var(--up); font-weight: 700; } td.n { color: var(--muted); }
+    .jb { background: linear-gradient(135deg, color-mix(in srgb, var(--up) 14%, var(--surface)), var(--surface)); }
+    footer { border-top: 1px solid var(--line); padding: 28px 0 40px; color: var(--muted); font-size: 15px; }
+    footer .wrap { display: flex; gap: 18px; flex-wrap: wrap; justify-content: space-between; }
+  
+    .docs { display: grid; grid-template-columns: 230px minmax(0, 1fr); gap: 28px; padding: 32px 0 72px; align-items: start; }
+    @media (max-width: 900px) { .docs { grid-template-columns: minmax(0, 1fr); } .docs nav.side { position: static; } }
+    nav.side { position: sticky; top: 80px; padding: 14px 10px; }
+    nav.side a { display: block; padding: 7px 10px; border-radius: 8px; color: var(--muted); font-weight: 600; font-size: 15px; }
+    nav.side a:hover { background: var(--up-soft); color: var(--text); text-decoration: none; }
+    nav.side a.on { background: var(--up-soft); color: var(--text); box-shadow: inset 3px 0 0 var(--up); }
+    article.doc { padding: 32px 36px; }
+    @media (max-width: 600px) { article.doc { padding: 20px 16px; } }
+    article.doc h1 { font-size: clamp(26px, 4vw, 34px); margin: 0 0 16px; letter-spacing: -.01em; }
+    article.doc h2 { font-size: 21px; margin: 34px 0 10px; }
+    article.doc h3 { font-size: 17px; margin: 24px 0 8px; }
+    article.doc h2 a, article.doc h3 a { color: inherit; }
+    article.doc p, article.doc li { font-size: 17px; }
+    article.doc code { font: 14px var(--font-mono); background: color-mix(in srgb, var(--muted) 14%, transparent); padding: 2px 6px; border-radius: 6px; }
+    article.doc pre { margin: 14px 0; }
+    article.doc pre code { background: none; padding: 0; color: var(--code-text); }
+    article.doc table { margin: 14px 0; display: block; overflow-x: auto; }
+    article.doc { min-width: 0; }
+    .pager { display: flex; justify-content: space-between; gap: 12px; margin-top: 36px; padding-top: 18px; border-top: 1px solid var(--line); }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="/jammonic/"><svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="8" fill="#0f172a"/><path d="M3 17h6l3-8 5 15 4-11 2 4h6" fill="none" stroke="#34d399" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>Jammonic</a>
+    <nav>
+      <a href="/jammonic/#features">Features</a>
+      <a href="/jammonic/#api">API &amp; YAML</a>
+      <a href="/jammonic/#compare">Compare</a>
+      <a href="/jammonic/docs/">Docs</a>
+      <a href="https://hub.docker.com/r/jambotron/jammonic">Docker Hub</a>
+    </nav>
+  </div>
+</header>
+<main class="wrap docs">
+  <nav class="side card" aria-label="Documentation">
+      <a href="./">Overview</a>
+      <a href="quick-start.html">Try it on your computer</a>
+      <a href="install.html">Install on a server</a>
+      <a href="checks.html">Checks</a>
+      <a href="api.html">API</a>
+      <a href="config-file.html">Configuration file</a>
+      <a href="notifications.html">Alerts</a>
+      <a href="status-page.html">Status page</a>
+      <a href="sign-in.html">Sign-in</a>
+      <a href="changelog.html" class="on">Changelog</a>
+      <a href="license.html">License</a>
+  </nav>
+  <article class="doc card">
+<h1>Changelog</h1>
+<h2 id="0-1-7-2026-11-19"><a href="#0-1-7-2026-11-19">0.1.7 — 2026-11-19</a></h2>
+<ul>
+<li>Email only for the checks you choose: <code>MONITOR_MAIL_TYPES=PUSH</code> sends letters about backups and timers, while
+Telegram keeps reporting everything. Empty — email about all checks, as before. See <a href="notifications.html">Alerts</a>.</li>
+</ul>
+<h2 id="0-1-6-2026-11-19"><a href="#0-1-6-2026-11-19">0.1.6 — 2026-11-19</a></h2>
+<ul>
+<li>Moving from Uptime Kuma without touching your scripts: push checks also answer at <code>/api/push/&lt;token&gt;</code> — the same
+address Kuma uses — and a PUSH check can be created with your own <code>pushToken</code>, so the old token keeps working.
+See <a href="checks.html#moving-from-uptime-kuma">Moving from Uptime Kuma</a>.</li>
+</ul>
+<h2 id="0-1-5-2026-11-19"><a href="#0-1-5-2026-11-19">0.1.5 — 2026-11-19</a></h2>
+<ul>
+<li>Status page on its own domain: list it in <code>MONITOR_STATUS_HOSTS</code> (e.g. <code>status.example.com</code>) and the root of that
+domain opens the status page at once; other domains still open the app. See <a href="status-page.html">Status page</a>.</li>
+<li>Favicon made from the logo.</li>
+</ul>
+<h2 id="0-1-4-2026-11-19"><a href="#0-1-4-2026-11-19">0.1.4 — 2026-11-19</a></h2>
+<ul>
+<li>Status page: a heart monitor line above the uptime bars — a green day beats, a red day is a flat line, a bright
+sweep runs across. Light theme looks like a bedside monitor, dark theme like a green oscilloscope.</li>
+<li>Theme switch: Auto / Light / Dark, in the app header and at the bottom of the status page; remembered in the browser.</li>
+<li>Smoother scrolling on the status page: the trace is drawn once and only the sweep moves.</li>
+</ul>
+<h2 id="0-1-3-2026-11-18"><a href="#0-1-3-2026-11-18">0.1.3 — 2026-11-18</a></h2>
+<ul>
+<li>New look: a slowly moving glow and a faint grid instead of the background picture, a beating pulse in the logo,
+breathing status dots (a down check pulses red); motion is off when the system asks for reduced motion.</li>
+</ul>
+<h2 id="0-1-2-2026-11-18"><a href="#0-1-2-2026-11-18">0.1.2 — 2026-11-18</a></h2>
+<ul>
+<li>Frosted-glass cards and header.</li>
+</ul>
+<h2 id="0-1-1-2026-11-18"><a href="#0-1-1-2026-11-18">0.1.1 — 2026-11-18</a></h2>
+<ul>
+<li>License: free for any use, including commercial; the source code is not published. The text is in the image,
+<code>/app/licenses/LICENSE</code> — see <a href="license.html">License</a>.</li>
+</ul>
+<h2 id="0-1-0-2026-11-18"><a href="#0-1-0-2026-11-18">0.1.0 — 2026-11-18</a></h2>
+<p>First public image.</p>
+<ul>
+<li>HTTP(S), TCP, certificate and push checks; repeat before DOWN.</li>
+<li>REST API with idempotent create-or-update by your key; YAML configuration file.</li>
+<li>Public status page rendered on the server.</li>
+<li>Alerts: Telegram, email, signed webhook.</li>
+<li>Web UI (Angular 22); sign-in with an API key or with Jambotron.</li>
+<li>Spring Boot 4.1, Java 25 with an AOT cache, SQLite.</li>
+</ul>
+
+<div class="pager"><span><a href="sign-in.html">← Sign-in</a></span><span><a href="license.html">License →</a></span></div>
+  </article>
+</main>
+<footer>
+  <div class="wrap">
+    <span>Jammonic · free for any use · <a href="/jammonic/docs/license.html">license</a> · by <a href="https://jambotron.com">Jambotron</a></span>
+    <span><a href="/jammonic/docs/">Docs</a> · <a href="https://hub.docker.com/r/jambotron/jammonic">Docker Hub</a> · <a href="/jammonic/docs/changelog.html">Changelog</a></span>
+  </div>
+</footer>
+</body>
+</html>

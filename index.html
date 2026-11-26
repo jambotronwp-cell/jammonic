@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Jammonic — uptime monitoring you configure with code</title>
+  <meta name="description" content="Jammonic is a free, self-hosted uptime monitor: HTTP, TCP, certificate and push checks, a public status page, alerts — and everything set up through a REST API or one YAML file. One Docker image.">
+  <link rel="canonical" href="https://jammonic.com/">
+  <meta property="og:title" content="Jammonic — uptime monitoring you configure with code">
+  <meta property="og:description" content="HTTP, TCP, certificate and push checks, a status page and alerts. Set up by REST API or YAML. One Docker image, free.">
+  <meta property="og:type" content="website">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230f172a'/%3E%3Cpath d='M3 17h6l3-8 5 15 4-11 2 4h6' fill='none' stroke='%2334d399' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #f6f7fb; --surface: #ffffff; --text: #111827; --muted: #5b6475; --line: #e3e7ef;
+      --up: #0f9f62; --up-soft: #dcf5e9; --down: #d23b3b; --accent: #2f6fed; --code-bg: #0f172a; --code-text: #e2e8f0;
+      --font: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; --font-mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+      --radius: 14px;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root { --bg: #0b1020; --surface: #121a2e; --text: #e8ecf4; --muted: #9aa4b8; --line: #23304a;
+        --up: #34d399; --up-soft: #12352a; --down: #f87171; --accent: #7aa2ff; --code-bg: #0a0f1d; }
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { margin: 0; background: var(--bg); color: var(--text); font: 17px/1.6 var(--font); }
+    a { color: var(--accent); text-decoration: none; } a:hover { text-decoration: underline; }
+    .wrap { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+    header.top { position: sticky; top: 0; z-index: 10; backdrop-filter: blur(10px); background: color-mix(in srgb, var(--bg) 82%, transparent);
+      border-bottom: 1px solid var(--line); }
+    header.top .wrap { display: flex; align-items: center; gap: 22px; height: 60px; }
+    .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 20px; color: var(--text); }
+    .brand svg { width: 30px; height: 30px; }
+    header.top nav { margin-left: auto; display: flex; gap: 20px; flex-wrap: wrap; }
+    header.top nav a { color: var(--muted); font-weight: 600; font-size: 15px; }
+    .hero { padding: 72px 0 40px; display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); gap: 40px; align-items: center; }
+    @media (max-width: 900px) { .hero { grid-template-columns: minmax(0, 1fr); padding-top: 44px; } header.top nav { display: none; } }
+    .hero h1 { font-size: clamp(34px, 5vw, 54px); line-height: 1.08; margin: 0 0 18px; letter-spacing: -.02em; }
+    .hero h1 em { font-style: normal; color: var(--up); }
+    .hero p.lead { font-size: 20px; color: var(--muted); margin: 0 0 26px; }
+    .btns { display: flex; gap: 12px; flex-wrap: wrap; }
+    .btn { display: inline-block; padding: 12px 20px; border-radius: 10px; font-weight: 700; border: 1px solid var(--line); color: var(--text); background: var(--surface); }
+    .btn.primary { background: var(--up); border-color: var(--up); color: #fff; }
+    .btn:hover { text-decoration: none; filter: brightness(1.05); }
+    .note { color: var(--muted); font-size: 14px; margin-top: 14px; }
+    pre { background: var(--code-bg); color: var(--code-text); border-radius: var(--radius); padding: 18px 20px; overflow-x: auto;
+      font: 14px/1.55 var(--font-mono); margin: 0; }
+    pre .c { color: #7c8aa5; } pre .k { color: #34d399; } pre .s { color: #fbbf24; }
+    .card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 22px; }
+    .status { padding: 0; overflow: hidden; }
+    .status .head { background: var(--up); color: #fff; padding: 14px 18px; font-weight: 700; }
+    .status .row { padding: 12px 18px; border-top: 1px solid var(--line); }
+    .status .row .n { display: flex; justify-content: space-between; font-weight: 600; font-size: 15px; margin-bottom: 6px; }
+    .status .row .n span { color: var(--muted); font-weight: 500; }
+    .bars { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 2px; height: 22px; }
+    .bars i { border-radius: 2px; background: var(--up); }
+    .bars i.p { background: #e0a82e; } .bars i.b { background: var(--down); }
+    section { padding: 56px 0; }
+    section h2 { font-size: clamp(26px, 3.4vw, 34px); margin: 0 0 10px; letter-spacing: -.01em; }
+    section p.sub { color: var(--muted); margin: 0 0 28px; font-size: 18px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+    .grid .card h3 { margin: 0 0 6px; font-size: 18px; }
+    .grid .card p { margin: 0; color: var(--muted); font-size: 16px; }
+    .two { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 18px; }
+    .two > div, .hero > div { min-width: 0; }
+    @media (max-width: 900px) { .two { grid-template-columns: minmax(0, 1fr); } }
+    .two h3 { margin: 0 0 10px; font-size: 17px; }
+    table { width: 100%; border-collapse: collapse; font-size: 16px; }
+    th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+    th { color: var(--muted); font-weight: 600; }
+    td.y { color: var(--up); font-weight: 700; } td.n { color: var(--muted); }
+    .jb { background: linear-gradient(135deg, color-mix(in srgb, var(--up) 14%, var(--surface)), var(--surface)); }
+    footer { border-top: 1px solid var(--line); padding: 28px 0 40px; color: var(--muted); font-size: 15px; }
+    footer .wrap { display: flex; gap: 18px; flex-wrap: wrap; justify-content: space-between; }
+  </style>
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"SoftwareApplication","name":"Jammonic","applicationCategory":"DeveloperApplication",
+   "operatingSystem":"Docker","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"license":"https://jammonic.com/docs/license.html",
+   "description":"Self-hosted uptime monitor configured by REST API or YAML: HTTP, TCP, certificate and push checks, status page, alerts.",
+   "url":"https://jammonic.com/","publisher":{"@type":"Organization","name":"Jambotron","url":"https://jambotron.com"}}
+  </script>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="/jammonic/"><svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="8" fill="#0f172a"/><path d="M3 17h6l3-8 5 15 4-11 2 4h6" fill="none" stroke="#34d399" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>Jammonic</a>
+    <nav>
+      <a href="#features">Features</a>
+      <a href="#api">API &amp; YAML</a>
+      <a href="#compare">Compare</a>
+      <a href="/jammonic/docs/">Docs</a>
+      <a href="https://hub.docker.com/r/jambotron/jammonic">Docker Hub</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="wrap hero">
+    <div>
+      <h1>Uptime monitoring you <em>configure with code</em></h1>
+      <p class="lead">Jammonic watches your sites, ports, certificates and cron jobs, shows a public status page and tells you when
+        something breaks. Everything you can click in the UI, you can also do with one REST call or one YAML file.</p>
+      <div class="btns">
+        <a class="btn primary" href="/jammonic/docs/quick-start.html">Start in one minute</a>
+        <a class="btn" href="https://monitor-external.jambocheck.com/status">See a live status page</a>
+      </div>
+      <p class="note">Free for any use, including commercial · one Docker image · SQLite inside</p>
+    </div>
+    <div class="card status" aria-label="Example status page">
+      <div class="head">All systems operational</div>
+      <div class="row"><div class="n">jambotron.com <span>100.00%</span></div><div class="bars" aria-hidden="true">
+        <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+      <div class="row"><div class="n">Mail <span>99.71%</span></div><div class="bars" aria-hidden="true">
+        <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i class="p"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+      <div class="row"><div class="n">Nightly backup <span>96.67%</span></div><div class="bars" aria-hidden="true">
+        <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i class="b"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+    </div>
+  </div>
+
+  <section id="features">
+    <div class="wrap">
+      <h2>What it watches</h2>
+      <p class="sub">Four kinds of checks cover a typical small infrastructure.</p>
+      <div class="grid">
+        <div class="card"><h3>HTTP(S)</h3><p>Status code, a word on the page, response time. "Down" only on 5xx if you like — redirects and logins stay green.</p></div>
+        <div class="card"><h3>TCP</h3><p>Any port: database, SMTP, SSH, game server. Up when the port answers.</p></div>
+        <div class="card"><h3>Certificates</h3><p>The full TLS chain, like a browser checks it, and a warning days before expiry.</p></div>
+        <div class="card"><h3>Push</h3><p>Backups, cron jobs, timers call a URL when done. No signal in time — it's down.</p></div>
+      </div>
+      <div class="grid" style="margin-top:16px">
+        <div class="card"><h3>Public status page</h3><p>Groups, 90 days of uptime bars, rendered on the server: fast, readable without JavaScript.</p></div>
+        <div class="card"><h3>Alerts</h3><p>Telegram, email and a signed webhook. A short blip is re-checked before it becomes an alert.</p></div>
+        <div class="card"><h3>Small and fast</h3><p>Java 25 with an AOT cache starts in seconds; one container, SQLite in a volume, backup = copy one file.</p></div>
+        <div class="card"><h3>Modern Spring</h3><p>Spring Boot 4, Spring Modulith, virtual threads, Angular 22 — open, readable code to learn from.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="api">
+    <div class="wrap">
+      <h2>Monitoring as code</h2>
+      <p class="sub">Your deploy script adds a check; your backup script reports in. Idempotent by your own key — run it twice, nothing doubles.</p>
+      <div class="two">
+        <div>
+          <h3>REST API</h3>
+<pre><span class="c"># create or update by your key</span>
+curl -X PUT -H "X-Api-Key: $KEY" \
+  -H 'Content-Type: application/json' \
+  -d '{"name":"shop","type":"HTTP",
+       "target":"https://shop.example.com"}' \
+  $JAMMONIC/api/v1/checks/by-external-id/<span class="s">shop-web</span>
+
+<span class="c"># at the end of a backup — no key needed</span>
+curl -fsS $JAMMONIC/push/<span class="s">&lt;token&gt;</span></pre>
+        </div>
+        <div>
+          <h3>One YAML file</h3>
+<pre><span class="k">checks:</span>
+  <span class="k">shop-web:</span>
+    name: shop
+    type: http
+    target: https://shop.example.com
+    status-page: true
+  <span class="k">nightly-backup:</span>
+    name: Nightly backup
+    type: push
+    interval-seconds: 86400
+    grace-seconds: 3600</pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="compare">
+    <div class="wrap">
+      <h2>How it compares</h2>
+      <p class="sub">Uptime Kuma is great to click; Gatus is great as a file. Jammonic does both, plus an API built for tools.</p>
+      <div class="card" style="overflow-x:auto">
+        <table>
+          <tr><th></th><th>Jammonic</th><th>Uptime Kuma</th><th>Gatus</th><th>Healthchecks</th></tr>
+          <tr><td>Full REST API for checks</td><td class="y">yes</td><td class="n">limited</td><td class="n">read-only</td><td class="n">push checks</td></tr>
+          <tr><td>Config file</td><td class="y">yes, and API too</td><td class="n">no</td><td class="y">yes</td><td class="n">no</td></tr>
+          <tr><td>Idempotent upsert by your key</td><td class="y">yes</td><td class="n">no</td><td class="n">—</td><td class="n">push checks</td></tr>
+          <tr><td>HTTP · TCP · certificate · push</td><td class="y">all four</td><td class="y">yes</td><td class="y">yes</td><td class="n">push only</td></tr>
+          <tr><td>Status page without JavaScript</td><td class="y">yes</td><td class="n">no</td><td class="n">no</td><td class="n">—</td></tr>
+          <tr><td>Sign in with your existing accounts</td><td class="y">with Jambotron</td><td class="n">no</td><td class="n">OIDC</td><td class="n">no</td></tr>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="card jb">
+        <h2 style="margin-top:0">Runs on Jambotron</h2>
+        <p>Jammonic is part of the <a href="https://jambotron.com">Jambotron</a> family, next to <a href="https://synth-mail.com">Synth Mail</a>.
+          On Jambotron it is deployed in one click, people sign in with their Jambotron account, and Jambotron itself creates checks for
+          every project domain, every host UI and every backup. Outside Jambotron it is just a container — use it anywhere.</p>
+        <div class="btns"><a class="btn primary" href="/jammonic/docs/quick-start.html">Quick start</a><a class="btn" href="/jammonic/docs/api.html">API reference</a></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Jammonic · free for any use · <a href="/jammonic/docs/license.html">license</a> · by <a href="https://jambotron.com">Jambotron</a></span>
+    <span><a href="/jammonic/docs/">Docs</a> · <a href="https://hub.docker.com/r/jambotron/jammonic">Docker Hub</a> · <a href="/jammonic/docs/changelog.html">Changelog</a></span>
+  </div>
+</footer>
+</body>
+</html>
